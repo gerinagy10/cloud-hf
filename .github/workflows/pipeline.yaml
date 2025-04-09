@@ -55,25 +55,25 @@ jobs:
           pip install -r storage/requirements.txt
 
       - name: Build frontend Docker image
-        run: docker build -t cloud-hf/frontend:latest ./frontend
+        run: docker build -t ${{ env.DOCKERHUB_USERNAME }}/cloud-hf-frontend:latest ./frontend
 
       - name: Push frontend Docker image
-        run: docker push cloud-hf/frontend
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/cloud-hf-frontend
 
       - name: Build notifier Docker image
-        run: docker build -t cloud-hf/notifier:latest ./notifier
+        run: docker build -t ${{ env.DOCKERHUB_USERNAME }}/cloud-hf-notifier:latest ./notifier
 
       - name: Push notifier Docker image
-        run: docker push cloud-hf/notifier
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/cloud-hf-notifier
 
       - name: Build object detection Docker image
-        run: docker build -t cloud-hf/object-detection:latest "./object detection"
+        run: docker build -t ${{ env.DOCKERHUB_USERNAME }}/cloud-hf-object-detection:latest "./object detection"
 
       - name: Push object detection Docker image
-        run: docker push cloud-hf/object-detection
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/cloud-hf-object-detection
 
       - name: Build storage Docker image
-        run: docker build -t cloud-hf/storage:latest ./storage
+        run: docker build -t ${{ env.DOCKERHUB_USERNAME }}/cloud-hf-storage:latest ./storage
 
       - name: Push storage Docker image
-        run: docker push cloud-hf/storag
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/cloud-hf-storage
