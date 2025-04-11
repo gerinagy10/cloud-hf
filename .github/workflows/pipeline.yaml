@@ -61,15 +61,10 @@ jobs:
           python -m compileall .
 
       - name: Build object detection microservice
-        working-directory: ./"object detection"
+        working-directory: "./object detection"
         run: |
           echo "Building object detection..."
           python -m compileall .
-
-          echo "Building storage..."
-          cd storage
-          python -m compileall .
-          cd ..
 
       - name: Build storage microservice
         working-directory: ./storage
