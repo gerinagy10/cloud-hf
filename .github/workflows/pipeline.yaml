@@ -54,6 +54,29 @@ jobs:
           pip install -r "object detection"/requirements.txt
           pip install -r storage/requirements.txt
 
+      - name: Build notifier microservice
+        working-directory: ./notifier
+        run: |
+          echo "Building notifier..."
+          python -m compileall .
+
+      - name: Build object detection microservice
+        working-directory: ./"object detection"
+        run: |
+          echo "Building object detection..."
+          python -m compileall .
+
+          echo "Building storage..."
+          cd storage
+          python -m compileall .
+          cd ..
+
+      - name: Build storage microservice
+        working-directory: ./storage
+        run: |
+          echo "Building storage..."
+          python -m compileall .
+
       - name: Build frontend Docker image
         run: docker build -t ${{ env.DOCKERHUB_USERNAME }}/cloud-hf-frontend:latest ./frontend
 
