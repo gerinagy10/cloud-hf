@@ -1,6 +1,5 @@
-// App.tsx
-
 import React, { useEffect, useState } from 'react';
+import { socket } from './socketClient';
 
 interface ImageTextPair {
   id: string;
@@ -16,6 +15,16 @@ const App: React.FC = () => {
   // Fetch image-text pairs from the API on component mount
   useEffect(() => {
     fetchData();
+
+    socket.on("data_processed", (data) => {
+      console.log("Received from server:", data);
+      //setData(data);
+    });
+
+    // Clean up on unmount
+    return () => {
+      socket.off("data_processed");
+    };
   }, []);
 
   // Function to get data from our API endpoint
@@ -46,25 +55,30 @@ const App: React.FC = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('image', selectedFile);
-    formData.append('text', description);
+    socket.emit("process_data", {
+      text: "asd",
+      image: "asd", // should be base64 string
+    });
 
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-      // Clear the inputs and refresh the data after successful upload
-      setSelectedFile(null);
-      setDescription('');
-      fetchData();
-    } catch (error) {
-      console.error('Error uploading:', error);
-    }
+    // const formData = new FormData();
+    // formData.append('image', selectedFile);
+    // formData.append('text', description);
+
+    // try {
+    //   const response = await fetch('/api/upload', {
+    //     method: 'POST',
+    //     body: formData,
+    //   });
+    //   if (!response.ok) {
+    //     throw new Error('Upload failed');
+    //   }
+    //   // Clear the inputs and refresh the data after successful upload
+    //   setSelectedFile(null);
+    //   setDescription('');
+    //   fetchData();
+    // } catch (error) {
+    //   console.error('Error uploading:', error);
+    // }
   };
 
   return (
