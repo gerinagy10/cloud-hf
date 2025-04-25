@@ -42,44 +42,39 @@ const App: React.FC = () => {
     }
   };
 
-  // Handle file input change event
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     }
   };
 
-  // Handle form submission to upload a new image-text pair
+
   const handleUpload = async () => {
     if (!selectedFile || !description) {
       return;
     }
 
+    const base64 = await fileToBase64(selectedFile);
+
     socket.emit("process_data", {
-      text: "asd",
-      image: "asd", // should be base64 string
+      text: description,
+      image: base64,
     });
 
-    // const formData = new FormData();
-    // formData.append('image', selectedFile);
-    // formData.append('text', description);
-
-    // try {
-    //   const response = await fetch('/api/upload', {
-    //     method: 'POST',
-    //     body: formData,
-    //   });
-    //   if (!response.ok) {
-    //     throw new Error('Upload failed');
-    //   }
-    //   // Clear the inputs and refresh the data after successful upload
-    //   setSelectedFile(null);
-    //   setDescription('');
-    //   fetchData();
-    // } catch (error) {
-    //   console.error('Error uploading:', error);
-    // }
+    setDescription("")
+    setSelectedFile(null)
   };
+
+  async function fileToBase64(file: File): Promise<string> {
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+  
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', fontFamily: 'Arial, sans-serif' }}>
