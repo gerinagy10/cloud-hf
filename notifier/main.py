@@ -14,7 +14,7 @@ RABBITMQ_URL = "amqp://localhost/"
 REQUEST_EXCHANGE = "requests"
 RESPONSE_EXCHANGE = "storage_done"
 REQUEST_QUEUE = "detection_requests"
-RESPONSE_QUEUE = "data_processing_responses"
+RESPONSE_QUEUE = "notifier_responses"
 
 sio = socketio.AsyncServer(
     async_mode="asgi",
@@ -76,10 +76,8 @@ async def consume_processed_data():
                 data = json.loads(message.body)
                 sid = data.get('sid')
                 if sid:
-                    asyncio.run_coroutine_threadsafe(
-                        sio.emit("data_processed", data, to=sid),
-                        sio.eio.loop
-                    )
+                    await sio.emit("data_processed", data, to=sid)
+
                     print(f"Processed data sent to {sid}")
 
 @app.on_event("startup")

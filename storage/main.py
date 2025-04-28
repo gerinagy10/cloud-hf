@@ -6,6 +6,8 @@ import json
 RABBITMQ_URL = "amqp://localhost/"
 PROCESSED_EXCHANGE = "processed"
 STORAGE_QUEUE = "storage_requests"
+RESPONSE_EXCHANGE = "storage_done"
+RESPONSE_QUEUE = "notifier_responses"
 
 POSTGRES_DSN = "postgresql://postgres:postgres@localhost:5432/cloudhf"
 
@@ -17,13 +19,16 @@ async def save_to_db(pool, text, image_base64, human_count):
         ''', text, image_base64, human_count)
 
 async def main():
-    db_pool = await asyncpg.create_pool(dsn=POSTGRES_DSN)
-    print("Connected to PostgreSQL!")
+
+    # db_pool = await asyncpg.create_pool(dsn=POSTGRES_DSN)
+    # print("Connected to PostgreSQL!")
 
     connection = await aio_pika.connect_robust(RABBITMQ_URL)
     channel = await connection.channel()
 
     processed_exchange = await channel.declare_exchange(PROCESSED_EXCHANGE, aio_pika.ExchangeType.DIRECT)
+    response_exchange = await channel.declare_exchange(RESPONSE_EXCHANGE, aio_pika.ExchangeType.DIRECT)
+
     queue = await channel.declare_queue(STORAGE_QUEUE, durable=True)
     await queue.bind(processed_exchange, routing_key=STORAGE_QUEUE)
 
@@ -39,9 +44,17 @@ async def main():
                     image_base64 = data.get('image', '')
                     human_count = data.get('human_count', 0)
 
-                    await save_to_db(db_pool, text, image_base64, human_count)
+                    # # Save into DB
+                    # await save_to_db(db_pool, text, image_base64, human_count)
+                    # print(f"Saved record to DB: {text}, {human_count} humans")
 
-                    print(f"Saved record to DB: {text}, {human_count} humans")
+                    await response_exchange.publish(
+                        aio_pika.Message(
+                            body=json.dumps(data).encode()
+                        ),
+                        routing_key=RESPONSE_QUEUE
+                    )
+                    print(f"Sent response back to Notifier for sid: {data.get('sid')}")
 
                 except Exception as e:
                     print(f"Failed to process message: {e}")
