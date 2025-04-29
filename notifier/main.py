@@ -1,7 +1,6 @@
 import asyncio
 import aio_pika
 import json
-import threading
 import socketio
 import uvicorn
 import jsonpickle
