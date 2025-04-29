@@ -6,7 +6,7 @@ ConfigParser==7.2.0
 contextlib2==21.6.0
 crc32c==2.7.1
 cryptography==44.0.2
-ctypes_snappy==1.0
+ctypes_snappy==1.03
 curio==1.6
 cython==3.0.12
 docutils==0.21.2
