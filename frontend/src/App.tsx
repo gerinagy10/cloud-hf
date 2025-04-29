@@ -3,8 +3,9 @@ import { socket } from './socketClient';
 
 interface ImageTextPair {
   id: string;
-  imageUrl: string;
+  base64Image: string;
   text: string;
+  humanCount: number;
 }
 
 const App: React.FC = () => {
@@ -17,8 +18,16 @@ const App: React.FC = () => {
     fetchData();
 
     socket.on("data_processed", (data) => {
-      console.log("Received from server:", data);
-      //setData(data);
+      console.log("Received from server");
+      
+      const newItem: ImageTextPair = {
+        id: data.sid,
+        base64Image: "data:image/jpeg;base64," + data.image,
+        text: data.text,
+        humanCount: data.human_count,
+      };
+    
+      setData((prevData) => [...prevData, newItem]);
     });
 
     // Clean up on unmount
@@ -36,7 +45,7 @@ const App: React.FC = () => {
       // }
       // const result: ImageTextPair[] = await response.json();
 
-      setData(sampleData);
+      //setData(sampleData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -105,41 +114,14 @@ const App: React.FC = () => {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
         {data.map(item => (
           <div key={item.id} style={{ border: '1px solid #ddd', padding: '10px', width: 'calc(33% - 20px)', boxSizing: 'border-box' }}>
-            <img src={item.imageUrl} alt={item.text} style={{ width: '100%', height: 'auto' }} />
+            <img src={`${item.base64Image}`} alt={item.text} style={{ width: '100%', height: 'auto' }} />
             <p>{item.text}</p>
+            <p>Human count: {item.humanCount}</p>
           </div>
         ))}
       </div>
     </div>
   );
 };
-
-const sampleData: ImageTextPair[] = [
-  {
-    id: "1",
-    imageUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fblog.shareaholic.com%2Fwp-content%2Fuploads%2F2012%2F06%2Fcrowd-of-people.jpg&f=1&nofb=1&ipt=ee265022fe4caf6b7a99bc636cd9e13fadda96de825a22fa47be48c6a1def2a9",
-    text: "A beautiful sunset over the mountains.",
-  },
-  {
-    id: "2",
-    imageUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fblog.shareaholic.com%2Fwp-content%2Fuploads%2F2012%2F06%2Fcrowd-of-people.jpg&f=1&nofb=1&ipt=ee265022fe4caf6b7a99bc636cd9e13fadda96de825a22fa47be48c6a1def2a9",
-    text: "Relaxing day at the beach with palm trees.",
-  },
-  {
-    id: "3",
-    imageUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fblog.shareaholic.com%2Fwp-content%2Fuploads%2F2012%2F06%2Fcrowd-of-people.jpg&f=1&nofb=1&ipt=ee265022fe4caf6b7a99bc636cd9e13fadda96de825a22fa47be48c6a1def2a9",
-    text: "A bustling city skyline at night.",
-  },
-  {
-    id: "4",
-    imageUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fblog.shareaholic.com%2Fwp-content%2Fuploads%2F2012%2F06%2Fcrowd-of-people.jpg&f=1&nofb=1&ipt=ee265022fe4caf6b7a99bc636cd9e13fadda96de825a22fa47be48c6a1def2a9",
-    text: "A quiet forest trail in autumn.",
-  },
-  {
-    id: "5",
-    imageUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fblog.shareaholic.com%2Fwp-content%2Fuploads%2F2012%2F06%2Fcrowd-of-people.jpg&f=1&nofb=1&ipt=ee265022fe4caf6b7a99bc636cd9e13fadda96de825a22fa47be48c6a1def2a9",
-    text: "A glimpse into the stars and galaxies.",
-  },
-];
 
 export default App;
