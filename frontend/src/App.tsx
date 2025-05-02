@@ -36,20 +36,29 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Function to get data from our API endpoint
   const fetchData = async () => {
     try {
-      // const response = await fetch('/api/image-text');
-      // if (!response.ok) {
-      //   throw new Error('Network response was not ok');
-      // }
-      // const result: ImageTextPair[] = await response.json();
-
-      //setData(sampleData);
+      const response = await fetch("http://localhost:8001/detections");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
+      const result = await response.json();
+  
+      // Convert the API data to ImageTextPair format
+      const formattedData: ImageTextPair[] = result.map((item: any) => ({
+        id: item.id.toString(),
+        base64Image: `data:image/jpeg;base64,${item.image_base64}`,
+        text: item.text,
+        humanCount: item.human_count,
+      }));
+  
+      setData(formattedData);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
+  
 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
