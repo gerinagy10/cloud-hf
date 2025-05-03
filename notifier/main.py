@@ -1,4 +1,5 @@
 import asyncio
+import os
 import aio_pika
 import json
 import socketio
@@ -8,8 +9,7 @@ import jsonpickle
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-# RabbitMQ settings
-RABBITMQ_URL = "amqp://localhost/"
+RABBITMQ_URL = os.environ.get('RABBITMQ_CONNECTION') #"amqp://localhost/"
 REQUEST_EXCHANGE = "requests"
 RESPONSE_EXCHANGE = "storage_done"
 REQUEST_QUEUE = "detection_requests"

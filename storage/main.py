@@ -1,4 +1,5 @@
 import asyncio
+import os
 import aio_pika
 import asyncpg
 import json
@@ -9,15 +10,13 @@ from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import List
 
-# RabbitMQ
-RABBITMQ_URL = "amqp://localhost/"
+RABBITMQ_URL = os.environ.get('RABBITMQ_CONNECTION') #"amqp://localhost/"
 PROCESSED_EXCHANGE = "processed"
 STORAGE_QUEUE = "storage_requests"
 RESPONSE_EXCHANGE = "storage_done"
 RESPONSE_QUEUE = "notifier_responses"
 
-# PostgreSQL
-POSTGRES_DSN = "postgresql://postgres:postgres@localhost:5432/cloudhf"
+POSTGRES_DSN = os.environ.get('POSTGRE_CONNECTION') #"postgresql://postgres:postgres@localhost:5432/cloudhf"
 
 app = FastAPI()
 

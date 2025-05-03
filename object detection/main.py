@@ -8,7 +8,7 @@ import base64
 
 from ultralytics import YOLO
 
-RABBITMQ_URL = "amqp://localhost/"
+RABBITMQ_URL = os.environ.get('RABBITMQ_CONNECTION') #"amqp://localhost/"
 REQUEST_EXCHANGE = "requests"
 PROCESSED_EXCHANGE = "processed"
 REQUEST_QUEUE = "detection_requests"
