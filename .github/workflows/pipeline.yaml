@@ -53,10 +53,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential python3-dev libffi-dev
           pip install cython
+          pip install setuptools wheel build
 
       - name: Install dependencies for microservices
         run: |
-          pip install cython
           pip install --no-build-isolation -r notifier/requirements.txt
           pip install --no-build-isolation -r "object detection"/requirements.txt
           pip install --no-build-isolation -r storage/requirements.txt
