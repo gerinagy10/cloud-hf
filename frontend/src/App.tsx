@@ -13,7 +13,6 @@ const App: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [description, setDescription] = useState('');
 
-  // Fetch image-text pairs from the API on component mount
   useEffect(() => {
     fetchData();
 
@@ -58,15 +57,12 @@ const App: React.FC = () => {
       console.error("Error fetching data:", error);
     }
   };
-  
-
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     }
   };
-
 
   const handleUpload = async () => {
     if (!selectedFile || !description) {
@@ -92,12 +88,10 @@ const App: React.FC = () => {
       reader.readAsDataURL(file);
     });
   }
-  
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', fontFamily: 'Arial, sans-serif' }}>
       
-      {/* Upload Form */}
       <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc' }}>
         <h2>Upload New Image-Text Pair</h2>
         <input type="file" accept="image/*" onChange={handleFileChange} />
@@ -119,7 +113,6 @@ const App: React.FC = () => {
 
       <h1>Images</h1>
       
-      {/* Gallery Grid */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
         {data.map(item => (
           <div key={item.id} style={{ border: '1px solid #ddd', padding: '10px', width: 'calc(33% - 20px)', boxSizing: 'border-box' }}>
