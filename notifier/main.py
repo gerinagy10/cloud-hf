@@ -98,4 +98,4 @@ async def shutdown_event():
     print("RabbitMQ connection closed.")
 
 if __name__ == "__main__":
-    uvicorn.run(app_with_cors, host="127.0.0.1", port=8000)
+    uvicorn.run(app_with_cors, host="0.0.0.0", port=8000)
