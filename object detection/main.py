@@ -57,7 +57,7 @@ async def main():
         async for message in queue_iter:
             async with message.process():
                 data = json.loads(message.body)
-                print(f"Received message from client {data["sid"]}")
+                print(f"Received message from client {data['sid']}")
 
                 base64_image = data.get('image')
                 if base64_image:
