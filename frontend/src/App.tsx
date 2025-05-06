@@ -37,7 +37,7 @@ const App: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:8002/detections");
+      const response = await fetch("http://cloudhf-storage:8002/detections");
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
