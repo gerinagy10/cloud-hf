@@ -35,9 +35,17 @@ app_with_cors = CORSMiddleware(
 producer_connection = None
 producer_channel = None
 
+connected_clients = set()
+
 @sio.event
 async def connect(sid, environ):
     print("Client connected:", sid)
+    connected_clients.add(sid)
+
+@sio.event
+def disconnect(sid):
+    print("Client disconnected:", sid)
+    connected_clients.discard(sid)
 
 @sio.event
 async def process_data(sid, data):
@@ -57,10 +65,6 @@ async def process_data(sid, data):
     )
     print(f"Message sent to RabbitMQ for sid {sid}")
 
-@sio.event
-def disconnect(sid):
-    print("Client disconnected:", sid)
-
 async def consume_processed_data():
     connection = await aio_pika.connect_robust(RABBITMQ_URL)
     channel = await connection.channel()
@@ -74,9 +78,8 @@ async def consume_processed_data():
             async with message.process():
                 data = json.loads(message.body)
                 sid = data.get('sid')
-                if sid:
+                for sid in connected_clients:
                     await sio.emit("data_processed", data, to=sid)
-
                     print(f"Processed data sent to {sid}")
 
 @app.on_event("startup")
